@@ -1,0 +1,8 @@
+[IDdatabaseConfig]
+host = "localhost"
+user = "postgres"
+password = "oyo2ush"
+database = "test"
+port = 5432
+
+
