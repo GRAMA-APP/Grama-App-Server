@@ -48,17 +48,13 @@ public service class RequestInterceptor {
     }
 }
 
-service http:InterceptableService / on new http:Listener(8080) {
+service / on new http:Listener(8080) {
 
     private final postgresql:Client db;
 
     function init() returns error? {
         self.db = check new (IDdatabaseConfig.host,IDdatabaseConfig.user,IDdatabaseConfig.password,IDdatabaseConfig.database,IDdatabaseConfig.port);
         io:println("Postgres Database is connected and running successfully...");
-    }
-
-    public function createInterceptors() returns RequestInterceptor {
-        return new RequestInterceptor();
     }
 
     resource function get all_records() returns utils:Person[]|error {
