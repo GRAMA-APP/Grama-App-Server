@@ -59,10 +59,17 @@ isolated service / on new http:Listener(9090) {
     }
 
     isolated resource function post police_check(string nic_number) returns json|error? {
-        sql:ParameterizedQuery query = `SELECT * FROM police_records WHERE nic = ${nic_number}`;
-        utils:CriminalRecord userCrimeRecords = check self.db->queryRow(query);
-        json[] offenses = <json[]> userCrimeRecords.offense;
-        return offenses;
+        sql:ParameterizedQuery query_1 = `SELECT COUNT(*) FROM police_records WHERE nic = ${nic_number}`;
+        int userRecordCount = check self.db->queryRow(query_1);
+        if userRecordCount > 0{
+            sql:ParameterizedQuery query_2 = `SELECT * FROM police_records WHERE nic = ${nic_number}`;
+            utils:CriminalRecord userCrimeRecords = check self.db->queryRow(query_2);
+            json[] offenses = <json[]> userCrimeRecords.offense;
+            
+            io:println(offenses.length());
+            return false;
+        }
+        return true;
     }
 
 
