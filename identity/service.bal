@@ -88,7 +88,13 @@ service / on new http:Listener(8080) {
 
     resource function get check_nic_exists(string nic) returns boolean|error? {
         sql:ParameterizedQuery query = `SELECT * FROM person WHERE nic_number = ${nic}`;
+        
         utils:Person person = check self.db->queryRow(query);
+                //if query does not return any results, then the person does not exist in the database, then return false
+        if (person == null){
+            return false;
+        }
+
         if (person.nic_number == nic){
             return true;
         }
