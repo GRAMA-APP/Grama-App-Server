@@ -28,7 +28,7 @@ service / on new http:Listener(7070) {
     //     return result;
     // }
 
-    resource function post insertData(string nic, string reason, string document_id) returns sql:ExecutionResult|sql:Error {
+    resource function post insert_data(string nic, string reason, string document_id) returns sql:ExecutionResult|sql:Error {
         postgresql:Options postgresqlOptions = {
             connectTimeout: 10
         };
