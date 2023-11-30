@@ -34,9 +34,11 @@ service / on new http:Listener(7070) {
     resource function post insert_data(string nic, string reason, string document_id) returns sql:ExecutionResult|sql:Error|error?{
         
         uuid:Uuid uuid_request = check uuid:createType1AsRecord();
+        //convert uuid to string
+        string uuid_request_string = check uuid:toString(uuid_request);
     
 
-        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, supporting_documents) VALUES (${uuid_request},${nic},${reason}, ${document_id})`;
+        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, supporting_documents) VALUES (${uuid_request_string},${nic},${reason}, ${document_id})`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         return result;
