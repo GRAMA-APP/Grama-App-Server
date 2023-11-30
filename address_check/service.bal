@@ -47,7 +47,14 @@ public isolated service class RequestInterceptor {
     }
 }
 
-
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["http://localhost:3000"],
+        allowHeaders: ["REQUEST_ID"],
+        exposeHeaders: ["RESPONSE_ID"],
+        maxAge: 84900
+    }
+}
 
 isolated service / on new http:Listener(9090) {
 

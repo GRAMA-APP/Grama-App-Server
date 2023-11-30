@@ -6,6 +6,7 @@ import ballerinax/postgresql;
 import ballerinax/postgresql.driver as _;
 import ballerina/regex;
 import police_check.utils;
+import ballerina/time;
 
 configurable utils:DatabaseConfig PolicedatabaseConfig = ?;
 
@@ -47,7 +48,14 @@ public isolated service class RequestInterceptor {
     }
 }
 
-
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["http://localhost:3000"],
+        allowHeaders: ["REQUEST_ID"],
+        exposeHeaders: ["RESPONSE_ID"],
+        maxAge: 84900
+    }
+}
 
 isolated service / on new http:Listener(9090) {
 
@@ -65,9 +73,42 @@ isolated service / on new http:Listener(9090) {
             sql:ParameterizedQuery query_2 = `SELECT * FROM police_records WHERE nic = ${nic_number}`;
             utils:CriminalRecord userCrimeRecords = check self.db->queryRow(query_2);
             json[] offenses = <json[]> userCrimeRecords.offense;
+
+            json recentOffense = <json> offenses.pop();
+            io:print(recentOffense);
+
+            io:StringReader sr = new(<string> recentOffense, encoding = "UTF-8");
+            json j = check sr.readJson();
+            io:println(j.timestamp);
+
+            // Extract timestamp from the JSON object
+            string timestampString = check j.timestamp;
+            timestampString = timestampString + "Z";
+
+            //Parse timestamp string into time:Time
+            time:Utc|time:Error utc = time:utcFromString(timestampString);
+
+            // Get current timestamp
+            time:Utc utcNow = time:utcNow();
+
+            //string rfc3339Timestamp = time:format(j.timestamp, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+            // Calculate the duration between the timestamps
+            time:Seconds seconds = time:utcDiffSeconds(utcNow, check utc);
+            decimal years = seconds/31536000;
+
+            io:println(recentOffense);
+            io:println(seconds);
+            io:println(<int> years);
+            if <int>years < 1{
+                //The most recent offense occued less than one year: Contact the police station for confirmation
+                return false;
+            }
+            else{
+                //The most recent offense occued more than one year ago. Clear to issue the certificate
+                return true;
+            }
             
-            io:println(offenses.length());
-            return false;
         }
         return true;
     }

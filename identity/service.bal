@@ -48,6 +48,16 @@ public service class RequestInterceptor {
     }
 }
 
+
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["http://localhost:3000"],
+        allowHeaders: ["REQUEST_ID"],
+        exposeHeaders: ["RESPONSE_ID"],
+        maxAge: 84900
+    }
+}
+
 service / on new http:Listener(8080) {
 
     private final postgresql:Client db;

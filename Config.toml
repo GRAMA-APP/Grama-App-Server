@@ -1,0 +1,10 @@
+[slackConfig]
+authToken = "xoxp-6283090734433-6255926704631-6270545290546-2c2da6afcf1f407cfb01b8640d482a1f"
+channelName = "project-grama"
+
+[twillioConfig]
+fromMobile = "+19494384615"
+toMobile = "+94719999455"
+accountSId = "AC4c2bcf572f5c8e2758cfa6767ae32e70"
+authToken = "c2e5824bd2d8e4a71d90be69c5f5d0c9"
+message = "Your certificate is ready. You can Collect it from your gramasewaka Now";
