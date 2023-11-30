@@ -3,7 +3,7 @@ import ballerinax/postgresql;
 import ballerina/sql;
 import ballerinax/postgresql.driver as _;
 import ballerina/io;
-// import ballerina/uuid;
+import ballerina/uuid;
 
 public type DatabaseConfig record {|
     string host;
@@ -18,7 +18,10 @@ service / on new http:Listener(7070) {
     private final postgresql:Client db;
 
     function init() returns error? {
-        self.db = check new (IDdatabaseConfig.host,IDdatabaseConfig.user,IDdatabaseConfig.password,IDdatabaseConfig.database,IDdatabaseConfig.port);
+        postgresql:Options postgresqlOptions = {
+            connectTimeout: 10
+        };
+        self.db = check new (IDdatabaseConfig.host,IDdatabaseConfig.user,IDdatabaseConfig.password,IDdatabaseConfig.database,IDdatabaseConfig.port, options = postgresqlOptions);
         io:println("Postgres Database is connected and running successfully...");
     }
 
@@ -28,14 +31,12 @@ service / on new http:Listener(7070) {
     //     return result;
     // }
 
-    resource function post insert_data(string nic, string reason, string document_id) returns sql:ExecutionResult|sql:Error {
-        postgresql:Options postgresqlOptions = {
-            connectTimeout: 10
-        };
-        // uuid:Uuid uuid_request = check uuid:createType1AsRecord();
+    resource function post insert_data(string nic, string reason, string document_id) returns sql:ExecutionResult|sql:Error|error?{
+        
+        uuid:Uuid uuid_request = check uuid:createType1AsRecord();
     
 
-        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, supporting_documents) VALUES ('550e8400-e29b-41d4-a716-446655440000',${nic},${reason}, ${document_id})`;
+        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, supporting_documents) VALUES (${uuid_request},${nic},${reason}, ${document_id})`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         return result;
