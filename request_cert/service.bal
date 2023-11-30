@@ -13,6 +13,15 @@ public type DatabaseConfig record {|
     int port;
 |};
 
+public type Cert_Request record {|
+    string request_id;
+    string nic;
+    string requested_date;
+    string reason;
+    string supporting_documents;
+    string status;
+|};
+
 configurable DatabaseConfig IDdatabaseConfig = ?;
 service / on new http:Listener(7070) {
     private final postgresql:Client db;
@@ -58,6 +67,20 @@ service / on new http:Listener(7070) {
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         return result;
+    }
+
+    resource function get all_records() returns Cert_Request[]|error {
+
+        // Define the SQL query to retrieve all records from the 'person' table
+        sql:ParameterizedQuery query = `SELECT * FROM cert_request`;
+
+        // Execute the query using the established Postgres connection
+        stream<Cert_Request, sql:Error?> certRequestStream = self.db->query(query);
+
+        
+        return from Cert_Request request in certRequestStream
+            select request;
+        
     }
 }
 
