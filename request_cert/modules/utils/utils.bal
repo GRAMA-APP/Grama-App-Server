@@ -22,7 +22,6 @@ type TwilioConfig record {|
     string toMobile;
     string accountSId;
     string authToken;
-    string message;
 |};
 
 configurable TwilioConfig twillioConfig = ?;
@@ -44,8 +43,8 @@ public function send_slack_message(string nic_number) returns error? {
     });
 }
 
-public function send_twilio_message() returns error? {
-    var details = twilioClient->sendSms(twillioConfig.fromMobile, twillioConfig.toMobile, twillioConfig.message);
+public function send_twilio_message(string message) returns error? {
+    var details = twilioClient->sendSms(twillioConfig.fromMobile, twillioConfig.toMobile, message);
     //Response is printed as log messages
     if (details is twilio:SmsResponse) {
         log:printInfo("SMS_SID: " + details.sid.toString() + ", Body: " + details.body.toString());
