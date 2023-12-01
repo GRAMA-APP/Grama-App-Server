@@ -8,27 +8,6 @@ dependencies-toml-version = "2"
 distribution-version = "2201.8.2"
 
 [[package]]
-org = "ayant"
-name = "identity"
-version = "0.1.0"
-dependencies = [
-	{org = "ballerina", name = "constraint"},
-	{org = "ballerina", name = "http"},
-	{org = "ballerina", name = "io"},
-	{org = "ballerina", name = "jwt"},
-	{org = "ballerina", name = "regex"},
-	{org = "ballerina", name = "sql"},
-	{org = "ballerina", name = "test"},
-	{org = "ballerinai", name = "observe"},
-	{org = "ballerinax", name = "postgresql"},
-	{org = "ballerinax", name = "postgresql.driver"}
-]
-modules = [
-	{org = "ayant", packageName = "identity", moduleName = "identity"},
-	{org = "ayant", packageName = "identity", moduleName = "identity.utils"}
-]
-
-[[package]]
 org = "ballerina"
 name = "auth"
 version = "2.10.0"
@@ -57,9 +36,6 @@ name = "constraint"
 version = "1.5.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
-]
-modules = [
-	{org = "ballerina", packageName = "constraint", moduleName = "constraint"}
 ]
 
 [[package]]
@@ -143,9 +119,6 @@ dependencies = [
 	{org = "ballerina", name = "lang.string"},
 	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "time"}
-]
-modules = [
-	{org = "ballerina", packageName = "jwt", moduleName = "jwt"}
 ]
 
 [[package]]
@@ -241,6 +214,9 @@ dependencies = [
 	{org = "ballerina", name = "lang.value"},
 	{org = "ballerina", name = "observe"}
 ]
+modules = [
+	{org = "ballerina", packageName = "log", moduleName = "log"}
+]
 
 [[package]]
 org = "ballerina"
@@ -285,27 +261,10 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "regex"
-version = "1.4.3"
+version = "1.3.2"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"},
 	{org = "ballerina", name = "lang.string"}
-]
-modules = [
-	{org = "ballerina", packageName = "regex", moduleName = "regex"}
-]
-
-[[package]]
-org = "ballerina"
-name = "sql"
-version = "1.11.1"
-dependencies = [
-	{org = "ballerina", name = "io"},
-	{org = "ballerina", name = "jballerina.java"},
-	{org = "ballerina", name = "lang.object"},
-	{org = "ballerina", name = "time"}
-]
-modules = [
-	{org = "ballerina", packageName = "sql", moduleName = "sql"}
 ]
 
 [[package]]
@@ -360,24 +319,62 @@ modules = [
 
 [[package]]
 org = "ballerinax"
-name = "postgresql"
-version = "1.11.0"
+name = "client.config"
+version = "1.0.1"
 dependencies = [
-	{org = "ballerina", name = "crypto"},
-	{org = "ballerina", name = "io"},
-	{org = "ballerina", name = "jballerina.java"},
-	{org = "ballerina", name = "sql"},
-	{org = "ballerina", name = "time"}
-]
-modules = [
-	{org = "ballerinax", packageName = "postgresql", moduleName = "postgresql"}
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "oauth2"}
 ]
 
 [[package]]
 org = "ballerinax"
-name = "postgresql.driver"
-version = "1.5.0"
+name = "slack"
+version = "3.3.0"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "lang.runtime"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "mime"},
+	{org = "ballerina", name = "os"},
+	{org = "ballerina", name = "regex"},
+	{org = "ballerina", name = "url"},
+	{org = "ballerinax", name = "client.config"}
+]
 modules = [
-	{org = "ballerinax", packageName = "postgresql.driver", moduleName = "postgresql.driver"}
+	{org = "ballerinax", packageName = "slack", moduleName = "slack"}
+]
+
+[[package]]
+org = "ballerinax"
+name = "twilio"
+version = "3.2.0"
+dependencies = [
+	{org = "ballerina", name = "auth"},
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "mime"},
+	{org = "ballerina", name = "os"},
+	{org = "ballerina", name = "url"},
+	{org = "ballerinax", name = "client.config"}
+]
+modules = [
+	{org = "ballerinax", packageName = "twilio", moduleName = "twilio"}
+]
+
+[[package]]
+org = "osura"
+name = "notification_connectors"
+version = "0.1.0"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "test"},
+	{org = "ballerinai", name = "observe"},
+	{org = "ballerinax", name = "slack"},
+	{org = "ballerinax", name = "twilio"}
+]
+modules = [
+	{org = "osura", packageName = "notification_connectors", moduleName = "notification_connectors"}
 ]
 

@@ -57,7 +57,7 @@ public isolated service class RequestInterceptor {
     }
 }
 
-isolated service / on new http:Listener(9090) {
+isolated service / on new http:Listener(9000) {
 
     private final postgresql:Client db;
 
@@ -75,8 +75,6 @@ isolated service / on new http:Listener(9090) {
             json[] offenses = <json[]> userCrimeRecords.offense;
 
             json recentOffense = <json> offenses.pop();
-            io:print(recentOffense);
-
             io:StringReader sr = new(<string> recentOffense, encoding = "UTF-8");
             json j = check sr.readJson();
             io:println(j.timestamp);
@@ -91,15 +89,9 @@ isolated service / on new http:Listener(9090) {
             // Get current timestamp
             time:Utc utcNow = time:utcNow();
 
-            //string rfc3339Timestamp = time:format(j.timestamp, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
             // Calculate the duration between the timestamps
             time:Seconds seconds = time:utcDiffSeconds(utcNow, check utc);
             decimal years = seconds/31536000;
-
-            io:println(recentOffense);
-            io:println(seconds);
-            io:println(<int> years);
             if <int>years < 1{
                 //The most recent offense occued less than one year: Contact the police station for confirmation
                 return false;

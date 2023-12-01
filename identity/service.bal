@@ -49,11 +49,11 @@ public service class RequestInterceptor {
 }
 
 
+
 @http:ServiceConfig {
     cors: {
-        allowOrigins: ["http://localhost:3000"],
-        allowHeaders: ["REQUEST_ID"],
-        exposeHeaders: ["RESPONSE_ID"],
+        allowOrigins: ["*"],
+        allowHeaders: ["*"],
         maxAge: 84900
     }
 }
@@ -83,6 +83,9 @@ service / on new http:Listener(8080) {
 
 
     resource function get personal_record(string nic) returns utils:Person|error? {
+        if utils:validateNICNumber(nic) is false{
+            return error("Invalid NIC. Please recheck and submit");
+        }
         sql:ParameterizedQuery query = `SELECT * FROM person WHERE nic_number = ${nic}`;
         utils:Person person = check self.db->queryRow(query);
         return person;
