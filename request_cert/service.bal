@@ -61,7 +61,7 @@ service / on new http:Listener(7070) {
 
         string message;
 
-        utils:send_twilio_message(message);
+        _ = check utils:send_twilio_message(message);
 
         return result;
     }
