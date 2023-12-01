@@ -4,6 +4,7 @@ import ballerina/sql;
 import ballerinax/postgresql.driver as _;
 import ballerina/io;
 import ballerina/uuid;
+import request_cert.utils;
 
 public type DatabaseConfig record {|
     string host;
@@ -57,6 +58,8 @@ service / on new http:Listener(7070) {
         
         sql:ParameterizedQuery query = `UPDATE cert_request SET status = 'completed' WHERE request_id = ${request_id}`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
+
+        utils:send_twilio_message();
 
         return result;
     }
