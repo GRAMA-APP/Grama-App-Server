@@ -59,7 +59,7 @@ service / on new http:Listener(7070) {
         sql:ParameterizedQuery query = `UPDATE cert_request SET status = 'completed' WHERE request_id = ${request_id}`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
-        string message;
+        string message = "Your request has been completed. Please visit the grama niladhari office to collect your certificate.";
 
         _ = check utils:send_twilio_message(message);
 
@@ -70,6 +70,10 @@ service / on new http:Listener(7070) {
         
         sql:ParameterizedQuery query = `UPDATE cert_request SET status = 'rejected' WHERE request_id = ${request_id}`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
+
+        string message = "Your request has been rejected. Please contact the grama niladhari office for more information.";
+
+        _ = check utils:send_twilio_message(message);
 
         return result;
     }
