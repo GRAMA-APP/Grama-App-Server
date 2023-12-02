@@ -52,8 +52,7 @@ public service class RequestInterceptor {
 
 @http:ServiceConfig {
     cors: {
-        allowOrigins: ["*"],
-        allowHeaders: ["*"],
+        allowOrigins: ["http://localhost:3000"],
         maxAge: 84900
     }
 }

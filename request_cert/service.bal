@@ -24,6 +24,15 @@ public type Cert_Request record {|
 |};
 
 configurable DatabaseConfig IDdatabaseConfig = ?;
+
+
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["http://localhost:3000"],
+        maxAge: 84900
+    }
+}
+
 service / on new http:Listener(7070) {
     private final postgresql:Client db;
 
