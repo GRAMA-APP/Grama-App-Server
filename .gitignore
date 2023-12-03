@@ -3,3 +3,4 @@ generated
 Config.toml
 notification_connectors
 *.txt
+main.bal

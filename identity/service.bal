@@ -74,7 +74,7 @@ service / on new http:Listener(8080) {
         // Execute the query using the established Postgres connection
         stream<utils:Person, sql:Error?> personStream = self.db->query(query);
 
-        
+        check self.db.close();
         return from utils:Person person in personStream
             select person;
         
@@ -87,6 +87,7 @@ service / on new http:Listener(8080) {
         }
         sql:ParameterizedQuery query = `SELECT * FROM person WHERE nic_number = ${nic}`;
         utils:Person person = check self.db->queryRow(query);
+        check self.db.close();
         return person;
 
     }
@@ -94,7 +95,7 @@ service / on new http:Listener(8080) {
     resource function post add_personal_record(utils:Person newUser) returns sql:ExecutionResult|sql:Error {
         sql:ParameterizedQuery query = `INSERT INTO person VALUES (${newUser.nic_number}, ${newUser.f_name}, ${newUser.mid_name}, ${newUser.l_name}, ${newUser.address}, ${newUser.gender})`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
-
+        check self.db.close();
         return result;
     }
 
@@ -108,13 +109,14 @@ service / on new http:Listener(8080) {
          sql:ParameterizedQuery get_query = `SELECT * FROM person WHERE nic_number = ${nic}`;
         
             utils:Person person = check self.db->queryRow(get_query);
-              if (person.nic_number == nic){
-            return true;
+            check self.db.close();
+            if (person.nic_number == nic){
+                return true;
+              }
+            else{
+                return false;
+            }
         }
-        else{
-            return false;
-        }
-       }
        
  
       

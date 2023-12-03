@@ -64,12 +64,16 @@ isolated service / on new http:Listener(9000) {
         io:println("Postgres Database is connected and running successfully...");
     }
 
-    isolated resource function post police_check(string nic_number) returns json|error? {
+    isolated resource function post police_check(string nic_number) returns json|http:Response|error? {
+        if utils:validateNICNumber(nic_number) is false{
+            return utils:generateCustomResponse(404, "Invalid NIC Number. Please Recheck and Submit.");
+        }
         sql:ParameterizedQuery query_1 = `SELECT COUNT(*) FROM police_records WHERE nic = ${nic_number}`;
         int userRecordCount = check self.db->queryRow(query_1);
         if userRecordCount > 0{
             sql:ParameterizedQuery query_2 = `SELECT * FROM police_records WHERE nic = ${nic_number}`;
             utils:CriminalRecord userCrimeRecords = check self.db->queryRow(query_2);
+            check self.db.close();
             json[] offenses = <json[]> userCrimeRecords.offense;
 
             json recentOffense = <json> offenses.pop();

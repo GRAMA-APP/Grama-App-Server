@@ -35,12 +35,12 @@ public isolated service class RequestInterceptor {
             [jwt:Header, jwt:Payload] [_, payload] = check jwt:decode(token);
 
             if payload.toJson().role != "general-user"{
-                return utils:generateCustomResponse(401,"Unauthorized Access Point for a General User.");
+                return utils:generateCustomResponse(401, "Error:","Unauthorized Access Point for a General User.");
             }
         }
         else{
             // Handle missing token
-            return utils:generateCustomResponse(401,"Invalid Token.");
+            return utils:generateCustomResponse(401, "Error:","Invalid Token.");
         }
         
         return ctx.next();
@@ -72,7 +72,7 @@ isolated service / on new http:Listener(9090) {
         // Execute the query using the established Postgres connection
         stream<utils:AddressRecord, sql:Error?> addressStream = self.db->query(query);
 
-        
+        check self.db.close();
         return from utils:AddressRecord addressRecord in addressStream
             select addressRecord;
         
@@ -82,13 +82,18 @@ isolated service / on new http:Listener(9090) {
     isolated resource function post address_check(utils:AddressRecord userProvidedPayload) returns http:Response|error? {
         sql:ParameterizedQuery query = `SELECT address FROM user_address WHERE nic_number = ${userProvidedPayload.nic_number}`;
         utils:AddressRecord userAddressRecord = check self.db->queryRow(query);
-        io:print(userAddressRecord);
-        io:println(userProvidedPayload.address);
-        if userProvidedPayload.address != userAddressRecord.address{
-            return utils:generateCustomResponse(404, "Record mismatch between the provided address and the address stored in governmentDB");
+
+        string clearedStoredAddress = utils:sanitizeAddress(userAddressRecord.toString());
+        string clearedGivenAddress = utils:sanitizeAddress(userProvidedPayload.address.toString());
+        // io:print(clearedStoredAddress);
+        // io:println(clearedGivenAddress);
+
+        check self.db.close();
+        if clearedStoredAddress != clearedGivenAddress{
+            return utils:generateCustomResponse(404, "Error:","Record mismatch between the provided address and the address stored in governmentDB");
         }
         else{
-            return utils:generateCustomResponse(200, "Address Verified");
+            return utils:generateCustomResponse(200, "Success:","Address Verified");
         }
     }
 

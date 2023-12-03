@@ -18,9 +18,23 @@ public type DatabaseConfig record {|
     int port;
 |};
 
-public isolated function generateCustomResponse(int statusCode, string message) returns http:Response {
+public isolated function generateCustomResponse(int statusCode, string keyForResponse, string valueForResponse) returns http:Response {
     http:Response response = new;
     response.statusCode = statusCode;
-    response.setPayload({"Error": message});
+    response.setPayload({keyForResponse: valueForResponse});
     return response;
+}
+
+public isolated function sanitizeAddress(string userInputAddress) returns string {
+    string lowerCaseWithoutWhitespace = (userInputAddress.toLowerAscii()).trim(); //Convert to lowercase and remove whitespaces
+
+    string:RegExp r1 = re `^"|"$`;
+    lowerCaseWithoutWhitespace = r1.replaceAll(lowerCaseWithoutWhitespace, ""); //Remove Quatations
+
+    string:RegExp r = re ` `;
+    string[] splittedAddress = r.split(lowerCaseWithoutWhitespace); //Remove spaces and combine the string
+    string sanitizedString = string:'join("", ...splittedAddress);
+
+    return sanitizedString;
+
 }
