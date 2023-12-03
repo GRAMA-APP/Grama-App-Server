@@ -72,7 +72,6 @@ isolated service / on new http:Listener(9090) {
         // Execute the query using the established Postgres connection
         stream<utils:AddressRecord, sql:Error?> addressStream = self.db->query(query);
 
-        check self.db.close();
         return from utils:AddressRecord addressRecord in addressStream
             select addressRecord;
         
@@ -88,7 +87,6 @@ isolated service / on new http:Listener(9090) {
         // io:print(clearedStoredAddress);
         // io:println(clearedGivenAddress);
 
-        check self.db.close();
         if clearedStoredAddress != clearedGivenAddress{
             return utils:generateCustomResponse(404, "Error:","Record mismatch between the provided address and the address stored in governmentDB");
         }

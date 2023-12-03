@@ -73,7 +73,6 @@ isolated service / on new http:Listener(9000) {
         if userRecordCount > 0{
             sql:ParameterizedQuery query_2 = `SELECT * FROM police_records WHERE nic = ${nic_number}`;
             utils:CriminalRecord userCrimeRecords = check self.db->queryRow(query_2);
-            check self.db.close();
             json[] offenses = <json[]> userCrimeRecords.offense;
 
             json recentOffense = <json> offenses.pop();
