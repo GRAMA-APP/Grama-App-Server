@@ -3,7 +3,6 @@ import ballerinax/postgresql;
 import ballerina/sql;
 import ballerinax/postgresql.driver as _;
 import ballerina/io;
-import ballerina/uuid;
 import grama_cert_api.utils;
 
 public type DatabaseConfig record {|
