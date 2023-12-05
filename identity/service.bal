@@ -57,7 +57,7 @@ public service class RequestInterceptor {
     }
 }
 
-service / on new http:Listener(8080) {
+service /identity/v1 on new http:Listener(8080) {
 
     private final postgresql:Client db;
 
@@ -66,7 +66,7 @@ service / on new http:Listener(8080) {
         io:println("Postgres Database is connected and running successfully...");
     }
 
-    resource function get all_records() returns utils:Person[]|error {
+    resource function get all\-records() returns utils:Person[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
         sql:ParameterizedQuery query = `SELECT * FROM person`;
@@ -80,25 +80,32 @@ service / on new http:Listener(8080) {
     }
 
 
-    resource function get personal_record(string nic) returns utils:Person|error? {
+    resource function get personal\-record(string nic) returns utils:Person|json|error {
         if utils:validateNICNumber(nic) is false{
             return error("Invalid NIC. Please recheck and submit");
         }
+
+        sql:ParameterizedQuery count_query = `SELECT COUNT(*) FROM person WHERE nic_number = ${nic}`;
+        int count = check self.db->queryRow(count_query);
+        if (count == 0){
+            return {"message": "No Matching Records Found"}.toJson();
+        }
+
         sql:ParameterizedQuery query = `SELECT * FROM person WHERE nic_number = ${nic}`;
-        utils:Person person = check self.db->queryRow(query);
+        utils:Person|sql:Error person = check self.db->queryRow(query);
 
         return person;
 
     }
 
-    resource function post add_personal_record(utils:Person newUser) returns sql:ExecutionResult|sql:Error {
+    resource function post personal\-record(utils:Person newUser) returns sql:ExecutionResult|sql:Error {
         sql:ParameterizedQuery query = `INSERT INTO person VALUES (${newUser.nic_number}, ${newUser.f_name}, ${newUser.mid_name}, ${newUser.l_name}, ${newUser.address}, ${newUser.gender})`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         return result;
     }
 
-    resource function get check_nic_exists(string nic) returns boolean|error? {
+    resource function get nic\-validate(string nic) returns boolean|error? {
         sql:ParameterizedQuery count_query = `SELECT COUNT(*) FROM person WHERE nic_number = ${nic}`;
         int count = check self.db->queryRow(count_query);
         if (count == 0){

@@ -55,7 +55,7 @@ public isolated service class RequestInterceptor {
     }
 }
 
-isolated service / on new http:Listener(9000) {
+isolated service /police\-check/v1 on new http:Listener(9000) {
 
     private final postgresql:Client db;
 
@@ -64,7 +64,7 @@ isolated service / on new http:Listener(9000) {
         io:println("Postgres Database is connected and running successfully...");
     }
 
-    isolated resource function post police_check(string nic_number) returns json|http:Response|error? {
+    isolated resource function post clearence\-state(string nic_number) returns json|http:Response|error? {
         if utils:validateNICNumber(nic_number) is false{
             return utils:generateCustomResponse(404, "Invalid NIC Number. Please Recheck and Submit.");
         }
