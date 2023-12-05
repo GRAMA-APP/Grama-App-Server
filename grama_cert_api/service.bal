@@ -75,10 +75,10 @@ service / on new http:Listener(7070) {
         return result;
     }
 
-    resource function get all_records() returns Cert_Request[]|error {
+    resource function get all_records_division(string division) returns Cert_Request[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
-        sql:ParameterizedQuery query = `SELECT * FROM cert_request`;
+        sql:ParameterizedQuery query = `SELECT * FROM cert_request WHERE division=${division} ORDER BY requested_date DESC`;
 
         // Execute the query using the established Postgres connection
         stream<Cert_Request, sql:Error?> certRequestStream = self.db->query(query);
