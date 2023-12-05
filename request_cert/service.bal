@@ -33,7 +33,7 @@ configurable DatabaseConfig IDdatabaseConfig = ?;
     }
 }
 
-service /user\-certificate/v1 on new http:Listener(7070) {
+service / on new http:Listener(7070) {
     private final postgresql:Client db;
 
     function init() returns error? {
@@ -50,7 +50,7 @@ service /user\-certificate/v1 on new http:Listener(7070) {
     //     return result;
     // }
 
-    resource function post new\-certificate(string nic, string reason, string document_id) returns sql:ExecutionResult|sql:Error|error?{
+    resource function post insert_data(string nic, string reason, string document_id, string requested_by_nic) returns sql:ExecutionResult|sql:Error|error?{
         
         uuid:Uuid uuid_request = check uuid:createType1AsRecord();
         //convert uuid to string
@@ -71,7 +71,7 @@ service /user\-certificate/v1 on new http:Listener(7070) {
 
 
 
-    resource function get records\-by\-nic(string nic) returns Cert_Request[]|error {
+    resource function get all_records_by_nic(string nic) returns Cert_Request[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
         sql:ParameterizedQuery query = `SELECT * FROM cert_request WHERE requested_by_nic = ${nic}`;

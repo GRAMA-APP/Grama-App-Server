@@ -32,7 +32,7 @@ configurable DatabaseConfig IDdatabaseConfig = ?;
     }
 }
 
-service /grama\-certificate/v1 on new http:Listener(7070) {
+service / on new http:Listener(7070) {
     private final postgresql:Client db;
 
     function init() returns error? {
@@ -51,7 +51,7 @@ service /grama\-certificate/v1 on new http:Listener(7070) {
 
 
 
-    resource function post mark\-completed(string request_id) returns sql:ExecutionResult|sql:Error|error?{
+    resource function post mark_as_completed(string request_id) returns sql:ExecutionResult|sql:Error|error?{
         
         sql:ParameterizedQuery query = `UPDATE cert_request SET status = 'completed' WHERE request_id = ${request_id}`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
@@ -63,7 +63,7 @@ service /grama\-certificate/v1 on new http:Listener(7070) {
         return result;
     }
 
-    resource function post mark\-rejected(string request_id) returns sql:ExecutionResult|sql:Error|error?{
+    resource function post mark_as_rejected(string request_id) returns sql:ExecutionResult|sql:Error|error?{
         
         sql:ParameterizedQuery query = `UPDATE cert_request SET status = 'rejected' WHERE request_id = ${request_id}`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
@@ -75,7 +75,7 @@ service /grama\-certificate/v1 on new http:Listener(7070) {
         return result;
     }
 
-    resource function get all\-records() returns Cert_Request[]|error {
+    resource function get all_records() returns Cert_Request[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
         sql:ParameterizedQuery query = `SELECT * FROM cert_request`;

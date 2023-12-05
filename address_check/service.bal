@@ -54,7 +54,7 @@ public isolated service class RequestInterceptor {
     }
 }
 
-isolated service /address\-check/v1 on new http:Listener(9090) {
+isolated service / on new http:Listener(9090) {
 
     private final postgresql:Client db;
 
@@ -64,7 +64,7 @@ isolated service /address\-check/v1 on new http:Listener(9090) {
     }
 
 
-    isolated resource function get all\-records() returns utils:AddressRecord[]|error {
+    isolated resource function get all_records() returns utils:AddressRecord[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
         sql:ParameterizedQuery query = `SELECT * FROM user_address`;
@@ -78,12 +78,7 @@ isolated service /address\-check/v1 on new http:Listener(9090) {
     }
 
 
-    isolated resource function post verification(utils:AddressRecord userProvidedPayload) returns http:Response|json|error? {
-        sql:ParameterizedQuery count_query = `SELECT COUNT(*) FROM user_address WHERE nic_number = ${userProvidedPayload.nic_number}`;
-        int count = check self.db->queryRow(count_query);
-        if (count == 0){
-            return {"message": "No record found matching to the given NIC."}.toJson();
-        }
+    isolated resource function post address_check(utils:AddressRecord userProvidedPayload) returns http:Response|error? {
         sql:ParameterizedQuery query = `SELECT address FROM user_address WHERE nic_number = ${userProvidedPayload.nic_number}`;
         string userAddressRecord = check self.db->queryRow(query);
 
