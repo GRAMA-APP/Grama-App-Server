@@ -78,7 +78,14 @@ isolated service / on new http:Listener(9090) {
     }
 
 
-    isolated resource function post address_check(utils:AddressRecord userProvidedPayload) returns http:Response|error? {
+    isolated resource function post address_check(utils:AddressRecord userProvidedPayload) returns http:Response|json|error? {
+
+        sql:ParameterizedQuery count_query = `SELECT COUNT(*) FROM user_address WHERE nic_number = ${userProvidedPayload.nic_number}`;
+        int count = check self.db->queryRow(count_query);
+        if (count == 0){
+            return {"message": "No matching record found for the given NIC."}.toJson();
+        }
+
         sql:ParameterizedQuery query = `SELECT address FROM user_address WHERE nic_number = ${userProvidedPayload.nic_number}`;
         string userAddressRecord = check self.db->queryRow(query);
 
