@@ -40,7 +40,7 @@ service / on new http:Listener(7070) {
         postgresql:Options postgresqlOptions = {
             connectTimeout: 10
         };
-        self.db = check new (IDdatabaseConfig.host,IDdatabaseConfig.user,IDdatabaseConfig.password,IDdatabaseConfig.database,IDdatabaseConfig.port, options = postgresqlOptions);
+        self.db = check new (IDdatabaseConfig.host,IDdatabaseConfig.user,IDdatabaseConfig.password,IDdatabaseConfig.database,IDdatabaseConfig.port, options = postgresqlOptions,connectionPool = {maxOpenConnections: 5});
         io:println("Postgres Database is connected and running successfully...");
     }
 
