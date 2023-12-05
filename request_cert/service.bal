@@ -74,7 +74,7 @@ service / on new http:Listener(7070) {
     resource function get all_records_by_nic(string nic) returns Cert_Request[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
-        sql:ParameterizedQuery query = `SELECT * FROM cert_request WHERE nic = ${nic}`;
+        sql:ParameterizedQuery query = `SELECT * FROM cert_request WHERE requested_by_nic = ${nic}`;
 
         // Execute the query using the established Postgres connection
         stream<Cert_Request, sql:Error?> certRequestStream = self.db->query(query);
