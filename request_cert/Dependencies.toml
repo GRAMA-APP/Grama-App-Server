@@ -214,6 +214,9 @@ dependencies = [
 	{org = "ballerina", name = "lang.value"},
 	{org = "ballerina", name = "observe"}
 ]
+modules = [
+	{org = "ballerina", packageName = "log", moduleName = "log"}
+]
 
 [[package]]
 org = "ballerina"
@@ -253,6 +256,15 @@ version = "1.7.0"
 dependencies = [
 	{org = "ballerina", name = "io"},
 	{org = "ballerina", name = "jballerina.java"}
+]
+
+[[package]]
+org = "ballerina"
+name = "regex"
+version = "1.3.2"
+dependencies = [
+	{org = "ballerina", name = "jballerina.java"},
+	{org = "ballerina", name = "lang.string"}
 ]
 
 [[package]]
@@ -335,6 +347,15 @@ modules = [
 
 [[package]]
 org = "ballerinax"
+name = "client.config"
+version = "1.0.1"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "oauth2"}
+]
+
+[[package]]
+org = "ballerinax"
 name = "postgresql"
 version = "1.10.0"
 dependencies = [
@@ -357,20 +378,59 @@ modules = [
 ]
 
 [[package]]
+org = "ballerinax"
+name = "slack"
+version = "3.3.0"
+dependencies = [
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "lang.runtime"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "mime"},
+	{org = "ballerina", name = "os"},
+	{org = "ballerina", name = "regex"},
+	{org = "ballerina", name = "url"},
+	{org = "ballerinax", name = "client.config"}
+]
+modules = [
+	{org = "ballerinax", packageName = "slack", moduleName = "slack"}
+]
+
+[[package]]
+org = "ballerinax"
+name = "twilio"
+version = "3.2.0"
+dependencies = [
+	{org = "ballerina", name = "auth"},
+	{org = "ballerina", name = "http"},
+	{org = "ballerina", name = "log"},
+	{org = "ballerina", name = "mime"},
+	{org = "ballerina", name = "os"},
+	{org = "ballerina", name = "url"},
+	{org = "ballerinax", name = "client.config"}
+]
+modules = [
+	{org = "ballerinax", packageName = "twilio", moduleName = "twilio"}
+]
+
+[[package]]
 org = "ravinduwegiriya"
 name = "request_cert"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerina", name = "io"},
+	{org = "ballerina", name = "log"},
 	{org = "ballerina", name = "sql"},
 	{org = "ballerina", name = "test"},
 	{org = "ballerina", name = "uuid"},
 	{org = "ballerinai", name = "observe"},
 	{org = "ballerinax", name = "postgresql"},
-	{org = "ballerinax", name = "postgresql.driver"}
+	{org = "ballerinax", name = "postgresql.driver"},
+	{org = "ballerinax", name = "slack"},
+	{org = "ballerinax", name = "twilio"}
 ]
 modules = [
-	{org = "ravinduwegiriya", packageName = "request_cert", moduleName = "request_cert"}
+	{org = "ravinduwegiriya", packageName = "request_cert", moduleName = "request_cert"},
+	{org = "ravinduwegiriya", packageName = "request_cert", moduleName = "request_cert.utils"}
 ]
 
