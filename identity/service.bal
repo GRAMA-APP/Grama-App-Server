@@ -80,12 +80,19 @@ service /identity/v1 on new http:Listener(8080) {
     }
 
 
-    resource function get personal\-record(string nic) returns utils:Person|error? {
+    resource function get personal\-record(string nic) returns utils:Person|json|error {
         if utils:validateNICNumber(nic) is false{
             return error("Invalid NIC. Please recheck and submit");
         }
+
+        sql:ParameterizedQuery count_query = `SELECT COUNT(*) FROM person WHERE nic_number = ${nic}`;
+        int count = check self.db->queryRow(count_query);
+        if (count == 0){
+            return {"message": "No Matching Records Found"}.toJson();
+        }
+
         sql:ParameterizedQuery query = `SELECT * FROM person WHERE nic_number = ${nic}`;
-        utils:Person person = check self.db->queryRow(query);
+        utils:Person|sql:Error person = check self.db->queryRow(query);
 
         return person;
 
