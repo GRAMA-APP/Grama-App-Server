@@ -59,7 +59,7 @@ isolated service / on new http:Listener(9090) {
     private final postgresql:Client db;
 
     function init() returns error? {
-        self.db = check new (AddressDatabaseConfig.host,AddressDatabaseConfig.user,AddressDatabaseConfig.password,AddressDatabaseConfig.database,AddressDatabaseConfig.port,connectionPool = {maxOpenConnections: 5});
+        self.db = check new (AddressDatabaseConfig.host,AddressDatabaseConfig.user,AddressDatabaseConfig.password,AddressDatabaseConfig.database,AddressDatabaseConfig.port,connectionPool = {maxOpenConnections: 2});
         io:println("Postgres Database is connected and running successfully...");
     }
 
