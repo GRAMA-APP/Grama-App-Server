@@ -13,14 +13,19 @@ public type DatabaseConfig record {|
     int port;
 |};
 
-public type Cert_Request record {|
+type CertRequestOutput record {|
     string request_id;
     string nic;
     string requested_date;
     string reason;
-    string supporting_documents;
     string status;
+    string requested_by_user;
+    string division;
+    string nic_front;
+    string nic_back;
+    string bill;
 |};
+
 
 configurable DatabaseConfig IDdatabaseConfig = ?;
 
@@ -75,16 +80,16 @@ service / on new http:Listener(7000) {
         return result;
     }
 
-    resource function get all_records_division(string division) returns Cert_Request[]|error {
+    resource function get all_records_division(string division) returns CertRequestOutput[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
         sql:ParameterizedQuery query = `SELECT * FROM cert_request WHERE division=${division} ORDER BY requested_date DESC`;
 
         // Execute the query using the established Postgres connection
-        stream<Cert_Request, sql:Error?> certRequestStream = self.db->query(query);
+        stream<CertRequestOutput, sql:Error?> certRequestStream = self.db->query(query);
 
         
-        return from Cert_Request request in certRequestStream
+        return from CertRequestOutput request in certRequestStream
             select request;
         
     }
