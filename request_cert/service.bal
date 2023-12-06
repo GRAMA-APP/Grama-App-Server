@@ -14,13 +14,28 @@ public type DatabaseConfig record {|
     int port;
 |};
 
-public type Cert_Request record {|
+type CertRequestOutput record {|
     string request_id;
     string nic;
     string requested_date;
     string reason;
-    string supporting_documents;
     string status;
+    string requested_by_user;
+    string division;
+    string nic_front;
+    string nic_back;
+    string bill;
+|};
+
+
+type CertRequestInput record{|
+    string nic;
+    string reason;
+    string nic_front;
+    string nic_back;
+    string bill;
+    string uid;
+    string division;
 |};
 
 configurable DatabaseConfig IDdatabaseConfig = ?;
@@ -50,14 +65,14 @@ service / on new http:Listener(7070) {
     //     return result;
     // }
 
-    resource function post insert_data(string nic, string reason, string nic_front,string nic_back, string bill, string uid, string division) returns sql:ExecutionResult|sql:Error|error?{
+    resource function post insert_data(CertRequestInput userProvidedPayload) returns sql:ExecutionResult|sql:Error|error?{
         
         uuid:Uuid uuid_request = check uuid:createType1AsRecord();
         //convert uuid to string
         string uuid_request_string = check uuid:toString(uuid_request);
     
 
-        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, nic_front,nic_back,bill, requested_by_user, division) VALUES (${uuid_request_string},${nic},${reason}, ${nic_front},${nic_back},${bill},${uid},${division})`;
+        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, nic_front,nic_back,bill, requested_by_user, division) VALUES (${uuid_request_string},${userProvidedPayload.nic},${userProvidedPayload.reason}, ${userProvidedPayload.nic_front},${userProvidedPayload.nic_back},${userProvidedPayload.bill},${userProvidedPayload.uid},${userProvidedPayload.division})`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         string message = "Your request has been submitted. The reference number is " + uuid_request_string + ".";
@@ -71,16 +86,16 @@ service / on new http:Listener(7070) {
 
 
 
-    resource function get all_records_by_nic(string nic) returns Cert_Request[]|error {
+    resource function get all_records_by_nic(string nic) returns CertRequestOutput[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
         sql:ParameterizedQuery query = `SELECT * FROM cert_request WHERE requested_by_nic = ${nic}`;
 
         // Execute the query using the established Postgres connection
-        stream<Cert_Request, sql:Error?> certRequestStream = self.db->query(query);
+        stream<CertRequestOutput, sql:Error?> certRequestStream = self.db->query(query);
 
         
-        return from Cert_Request request in certRequestStream
+        return from CertRequestOutput request in certRequestStream
             select request;
         
     }
