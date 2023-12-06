@@ -50,14 +50,14 @@ service / on new http:Listener(7070) {
     //     return result;
     // }
 
-    resource function post insert_data(string nic, string reason, string document_id, string requested_by_nic, string division) returns sql:ExecutionResult|sql:Error|error?{
+    resource function post insert_data(string nic, string reason, string nic_front,string nic_back, string bill, string uid, string division) returns sql:ExecutionResult|sql:Error|error?{
         
         uuid:Uuid uuid_request = check uuid:createType1AsRecord();
         //convert uuid to string
         string uuid_request_string = check uuid:toString(uuid_request);
     
 
-        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, supporting_documents, requested_by_nic, division) VALUES (${uuid_request_string},${nic},${reason}, ${document_id},${requested_by_nic},${division})`;
+        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, nic_front,nic_back,bill, requested_by_user, division) VALUES (${uuid_request_string},${nic},${reason}, ${nic_front},${nic_back},${bill},${uid},${division})`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         string message = "Your request has been submitted. The reference number is " + uuid_request_string + ".";
