@@ -37,7 +37,7 @@ configurable DatabaseConfig IDdatabaseConfig = ?;
     }
 }
 
-service / on new http:Listener(7000) {
+service / on new http:Listener(6060) {
     private final postgresql:Client db;
 
     function init() returns error? {
