@@ -24,6 +24,8 @@ type CertRequestOutput record {|
     string nic_front;
     string nic_back;
     string bill;
+    string entered_address;
+    string reject_reason;
 |};
 
 
@@ -68,9 +70,9 @@ service / on new http:Listener(6060) {
         return result;
     }
 
-    resource function post mark_as_rejected(string request_id) returns sql:ExecutionResult|sql:Error|error?{
+    resource function post mark_as_rejected(string request_id, string reject_reason) returns sql:ExecutionResult|sql:Error|error?{
         
-        sql:ParameterizedQuery query = `UPDATE cert_request SET status = 'rejected' WHERE request_id = ${request_id}`;
+        sql:ParameterizedQuery query = `UPDATE cert_request SET status = 'rejected', reject_reason = ${reject_reason} WHERE request_id = ${request_id}`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         string message = "Your request has been rejected. Please contact the grama niladhari office for more information.";

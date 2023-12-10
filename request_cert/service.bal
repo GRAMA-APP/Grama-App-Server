@@ -25,6 +25,8 @@ type CertRequestOutput record {|
     string nic_front;
     string nic_back;
     string bill;
+    string entered_address;
+    string reject_reason;
 |};
 
 
@@ -36,6 +38,7 @@ type CertRequestInput record{|
     string bill;
     string uid;
     string division;
+    string entered_address;
 |};
 
 configurable DatabaseConfig IDdatabaseConfig = ?;
@@ -72,7 +75,7 @@ service / on new http:Listener(7070) {
         string uuid_request_string = check uuid:toString(uuid_request);
     
 
-        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, nic_front,nic_back,bill, requested_by_user, division) VALUES (${uuid_request_string},${userProvidedPayload.nic},${userProvidedPayload.reason}, ${userProvidedPayload.nic_front},${userProvidedPayload.nic_back},${userProvidedPayload.bill},${userProvidedPayload.uid},${userProvidedPayload.division})`;
+        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, nic_front,nic_back,bill, requested_by_user, division, entered_address) VALUES (${uuid_request_string},${userProvidedPayload.nic},${userProvidedPayload.reason}, ${userProvidedPayload.nic_front},${userProvidedPayload.nic_back},${userProvidedPayload.bill},${userProvidedPayload.uid},${userProvidedPayload.division},${userProvidedPayload.entered_address}})`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         string message = "Your request has been submitted. The reference number is " + uuid_request_string + ".";
@@ -89,7 +92,7 @@ service / on new http:Listener(7070) {
     resource function get all_records_by_nic(string nic) returns CertRequestOutput[]|error {
 
         // Define the SQL query to retrieve all records from the 'person' table
-        sql:ParameterizedQuery query = `SELECT * FROM cert_request WHERE requested_by_nic = ${nic}`;
+        sql:ParameterizedQuery query = `SELECT * FROM cert_request WHERE requested_by_user = ${nic}`;
 
         // Execute the query using the established Postgres connection
         stream<CertRequestOutput, sql:Error?> certRequestStream = self.db->query(query);
