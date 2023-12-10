@@ -26,6 +26,8 @@ type CertRequestOutput record {|
     string bill;
     string entered_address;
     string reject_reason;
+    string name;
+    string contact_num;
 |};
 
 

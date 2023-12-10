@@ -27,6 +27,8 @@ type CertRequestOutput record {|
     string bill;
     string entered_address;
     string reject_reason;
+    string name;
+    string contact_num;
 |};
 
 
@@ -39,6 +41,8 @@ type CertRequestInput record{|
     string uid;
     string division;
     string entered_address;
+    string name;
+    string contact_num;
 |};
 
 configurable DatabaseConfig IDdatabaseConfig = ?;
@@ -75,7 +79,7 @@ service / on new http:Listener(7070) {
         string uuid_request_string = check uuid:toString(uuid_request);
     
 
-        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, nic_front,nic_back,bill, requested_by_user, division, entered_address) VALUES (${uuid_request_string},${userProvidedPayload.nic},${userProvidedPayload.reason}, ${userProvidedPayload.nic_front},${userProvidedPayload.nic_back},${userProvidedPayload.bill},${userProvidedPayload.uid},${userProvidedPayload.division},${userProvidedPayload.entered_address}})`;
+        sql:ParameterizedQuery query = `INSERT INTO cert_request(request_id, nic, reason, nic_front,nic_back,bill, requested_by_user, division, entered_address, name, contact_num) VALUES (${uuid_request_string},${userProvidedPayload.nic},${userProvidedPayload.reason}, ${userProvidedPayload.nic_front},${userProvidedPayload.nic_back},${userProvidedPayload.bill},${userProvidedPayload.uid},${userProvidedPayload.division},${userProvidedPayload.entered_address},${userProvidedPayload.name},${userProvidedPayload.contact_num})`;
         sql:ExecutionResult|sql:Error result = self.db->execute(query);
 
         string message = "Your request has been submitted. The reference number is " + uuid_request_string + ".";
